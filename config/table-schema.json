@@ -1,0 +1,693 @@
+{
+  "tableName": "cr4ea_deviations",
+  "displayName": "Deviations",
+  "pluralName": "Deviations",
+  "description": "Manufacturing deviation records for pharmaceutical quality operations with AI-powered classification and CAPA generation",
+  "ownershipType": "UserOrTeamOwned",
+  "enableOptions": {
+    "attachments": true,
+    "notes": true,
+    "activities": true,
+    "connections": false,
+    "feedback": false,
+    "queues": false,
+    "businessProcessFlows": true,
+    "audit": true,
+    "changeTracking": true,
+    "duplicateDetection": false
+  },
+  "primaryColumn": {
+    "schemaName": "cr4ea_title",
+    "displayName": "Title",
+    "description": "Brief title describing the deviation (e.g., 'Temperature excursion in cold storage')",
+    "dataType": "SingleLineOfText",
+    "maxLength": 200,
+    "required": true
+  },
+  "columns": [
+    {
+      "schemaName": "cr4ea_description",
+      "displayName": "Description",
+      "description": "Detailed description of the deviation including what happened, when, where, and what was affected",
+      "dataType": "MultipleLineOfText",
+      "maxLength": 4000,
+      "required": true,
+      "format": "Text"
+    },
+    {
+      "schemaName": "cr4ea_severity",
+      "displayName": "Severity",
+      "description": "Risk classification level based on patient safety and product quality impact (AI-populated)",
+      "dataType": "Choice",
+      "required": false,
+      "defaultValue": null,
+      "options": [
+        {
+          "label": "Low",
+          "value": 919860000,
+          "description": "No product or patient impact; documentation errors, cosmetic defects caught before release",
+          "color": "#107C10"
+        },
+        {
+          "label": "Medium",
+          "value": 919860001,
+          "description": "Product quality impact without immediate patient risk; OOS results, equipment failure with batch on hold",
+          "color": "#FFB900"
+        },
+        {
+          "label": "High",
+          "value": 919860002,
+          "description": "Direct patient safety risk or critical quality event; sterility breach, contamination, product recall potential",
+          "color": "#D13438"
+        }
+      ]
+    },
+    {
+      "schemaName": "cr4ea_status",
+      "displayName": "Status",
+      "description": "Current investigation status of the deviation",
+      "dataType": "Choice",
+      "required": true,
+      "defaultValue": 919860000,
+      "options": [
+        {
+          "label": "Open",
+          "value": 919860000,
+          "description": "Deviation logged, awaiting investigation assignment"
+        },
+        {
+          "label": "Under Investigation",
+          "value": 919860001,
+          "description": "Investigation in progress, root cause analysis underway"
+        },
+        {
+          "label": "Closed",
+          "value": 919860002,
+          "description": "Investigation complete, CAPA implemented and verified"
+        }
+      ]
+    },
+    {
+      "schemaName": "cr4ea_ai_summary",
+      "displayName": "AI Summary",
+      "description": "AI-generated structured summary including what happened, potential impact, and immediate containment actions",
+      "dataType": "MultipleLineOfText",
+      "maxLength": 4000,
+      "required": false,
+      "format": "Text"
+    },
+    {
+      "schemaName": "cr4ea_ai_capa",
+      "displayName": "AI CAPA",
+      "description": "AI-generated CAPA suggestions including root cause, corrective actions, preventive actions, and effectiveness checks",
+      "dataType": "MultipleLineOfText",
+      "maxLength": 8000,
+      "required": false,
+      "format": "Text"
+    },
+    {
+      "schemaName": "cr4ea_confidence",
+      "displayName": "Classification Confidence",
+      "description": "AI confidence score (0-100%) for severity classification; scores below 70% flag borderline cases for manual review",
+      "dataType": "Decimal",
+      "minValue": 0,
+      "maxValue": 100,
+      "precision": 5,
+      "scale": 2,
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_classified_date",
+      "displayName": "Classified Date",
+      "description": "Timestamp when AI classification was completed",
+      "dataType": "DateTime",
+      "format": "DateAndTime",
+      "behavior": "UserLocal",
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_product_name",
+      "displayName": "Product Name",
+      "description": "Product affected by the deviation (e.g., 'Amoxicillin 500mg tablets')",
+      "dataType": "SingleLineOfText",
+      "maxLength": 200,
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_batch_number",
+      "displayName": "Batch Number",
+      "description": "Batch or lot number affected by the deviation",
+      "dataType": "SingleLineOfText",
+      "maxLength": 100,
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_equipment_id",
+      "displayName": "Equipment ID",
+      "description": "Equipment or line identifier where deviation occurred (e.g., 'Tablet Press 5', 'Aseptic Line 3')",
+      "dataType": "SingleLineOfText",
+      "maxLength": 100,
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_deviation_date",
+      "displayName": "Deviation Date",
+      "description": "Date and time when the deviation occurred or was discovered",
+      "dataType": "DateTime",
+      "format": "DateAndTime",
+      "behavior": "UserLocal",
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_investigation_owner",
+      "displayName": "Investigation Owner",
+      "description": "Quality specialist assigned to lead the deviation investigation",
+      "dataType": "Lookup",
+      "target": "systemuser",
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_root_cause",
+      "displayName": "Root Cause",
+      "description": "Confirmed root cause identified through investigation (may differ from AI suggestion)",
+      "dataType": "MultipleLineOfText",
+      "maxLength": 2000,
+      "required": false,
+      "format": "Text"
+    },
+    {
+      "schemaName": "cr4ea_capa_implemented",
+      "displayName": "CAPA Implemented",
+      "description": "Corrective and preventive actions actually implemented (may differ from AI suggestion)",
+      "dataType": "MultipleLineOfText",
+      "maxLength": 4000,
+      "required": false,
+      "format": "Text"
+    },
+    {
+      "schemaName": "cr4ea_effectiveness_verified",
+      "displayName": "Effectiveness Verified",
+      "description": "Indicates whether CAPA effectiveness has been verified per effectiveness check plan",
+      "dataType": "TwoOptions",
+      "trueLabel": "Yes",
+      "falseLabel": "No",
+      "defaultValue": false,
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_target_closure_date",
+      "displayName": "Target Closure Date",
+      "description": "Target date for completing investigation and closing deviation",
+      "dataType": "DateTime",
+      "format": "DateOnly",
+      "behavior": "UserLocal",
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_actual_closure_date",
+      "displayName": "Actual Closure Date",
+      "description": "Actual date when deviation was closed following investigation completion and CAPA implementation",
+      "dataType": "DateTime",
+      "format": "DateOnly",
+      "behavior": "UserLocal",
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_regulatory_reportable",
+      "displayName": "Regulatory Reportable",
+      "description": "Indicates whether deviation must be reported to regulatory agencies (FDA, EMA)",
+      "dataType": "TwoOptions",
+      "trueLabel": "Yes",
+      "falseLabel": "No",
+      "defaultValue": false,
+      "required": false
+    },
+    {
+      "schemaName": "cr4ea_batch_disposition",
+      "displayName": "Batch Disposition",
+      "description": "Final disposition decision for affected batch",
+      "dataType": "Choice",
+      "required": false,
+      "defaultValue": null,
+      "options": [
+        {
+          "label": "Released",
+          "value": 919860000,
+          "description": "Batch approved for distribution after investigation"
+        },
+        {
+          "label": "Rejected",
+          "value": 919860001,
+          "description": "Batch rejected and destroyed due to quality defect"
+        },
+        {
+          "label": "Rework",
+          "value": 919860002,
+          "description": "Batch to be reworked or reprocessed per approved procedure"
+        },
+        {
+          "label": "Pending",
+          "value": 919860003,
+          "description": "Batch on hold awaiting investigation completion and disposition decision"
+        }
+      ]
+    }
+  ],
+  "systemColumns": [
+    {
+      "schemaName": "cr4ea_deviationsid",
+      "displayName": "Deviation",
+      "description": "Unique identifier for deviation record (system-generated GUID)",
+      "dataType": "UniqueIdentifier",
+      "isPrimaryKey": true,
+      "required": true
+    },
+    {
+      "schemaName": "createdon",
+      "displayName": "Created On",
+      "description": "Date and time when the record was created",
+      "dataType": "DateTime",
+      "format": "DateAndTime",
+      "behavior": "UserLocal",
+      "readOnly": true
+    },
+    {
+      "schemaName": "createdby",
+      "displayName": "Created By",
+      "description": "User who created the record",
+      "dataType": "Lookup",
+      "target": "systemuser",
+      "readOnly": true
+    },
+    {
+      "schemaName": "modifiedon",
+      "displayName": "Modified On",
+      "description": "Date and time when the record was last modified",
+      "dataType": "DateTime",
+      "format": "DateAndTime",
+      "behavior": "UserLocal",
+      "readOnly": true
+    },
+    {
+      "schemaName": "modifiedby",
+      "displayName": "Modified By",
+      "description": "User who last modified the record",
+      "dataType": "Lookup",
+      "target": "systemuser",
+      "readOnly": true
+    },
+    {
+      "schemaName": "ownerid",
+      "displayName": "Owner",
+      "description": "User or team who owns the record (typically the person who logged the deviation)",
+      "dataType": "Owner",
+      "required": true
+    },
+    {
+      "schemaName": "statecode",
+      "displayName": "Status",
+      "description": "Record state (Active or Inactive)",
+      "dataType": "State",
+      "options": [
+        {
+          "label": "Active",
+          "value": 0
+        },
+        {
+          "label": "Inactive",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "schemaName": "statuscode",
+      "displayName": "Status Reason",
+      "description": "Reason for the current status",
+      "dataType": "Status",
+      "options": [
+        {
+          "label": "Active",
+          "value": 1,
+          "state": 0
+        },
+        {
+          "label": "Inactive",
+          "value": 2,
+          "state": 1
+        }
+      ]
+    }
+  ],
+  "securityRoles": [
+    {
+      "roleName": "Quality Specialist",
+      "privileges": {
+        "create": "UserOwned",
+        "read": "UserOwned",
+        "write": "UserOwned",
+        "delete": "None",
+        "append": "UserOwned",
+        "appendTo": "UserOwned",
+        "assign": "None",
+        "share": "None"
+      },
+      "fieldLevelSecurity": [
+        {
+          "fieldName": "cr4ea_ai_summary",
+          "readAccess": true,
+          "updateAccess": false
+        },
+        {
+          "fieldName": "cr4ea_ai_capa",
+          "readAccess": true,
+          "updateAccess": false
+        },
+        {
+          "fieldName": "cr4ea_confidence",
+          "readAccess": false,
+          "updateAccess": false
+        }
+      ]
+    },
+    {
+      "roleName": "Quality Manager",
+      "privileges": {
+        "create": "Organization",
+        "read": "Organization",
+        "write": "Organization",
+        "delete": "Organization",
+        "append": "Organization",
+        "appendTo": "Organization",
+        "assign": "Organization",
+        "share": "Organization"
+      },
+      "fieldLevelSecurity": [
+        {
+          "fieldName": "cr4ea_ai_summary",
+          "readAccess": true,
+          "updateAccess": true
+        },
+        {
+          "fieldName": "cr4ea_ai_capa",
+          "readAccess": true,
+          "updateAccess": true
+        },
+        {
+          "fieldName": "cr4ea_confidence",
+          "readAccess": true,
+          "updateAccess": false
+        }
+      ]
+    },
+    {
+      "roleName": "Quality Director",
+      "privileges": {
+        "create": "None",
+        "read": "Organization",
+        "write": "None",
+        "delete": "None",
+        "append": "None",
+        "appendTo": "None",
+        "assign": "None",
+        "share": "None"
+      },
+      "fieldLevelSecurity": [
+        {
+          "fieldName": "cr4ea_ai_summary",
+          "readAccess": true,
+          "updateAccess": false
+        },
+        {
+          "fieldName": "cr4ea_ai_capa",
+          "readAccess": true,
+          "updateAccess": false
+        },
+        {
+          "fieldName": "cr4ea_confidence",
+          "readAccess": true,
+          "updateAccess": false
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "viewName": "Active Deviations",
+      "viewType": "Public",
+      "isDefault": true,
+      "columns": [
+        "cr4ea_title",
+        "cr4ea_severity",
+        "cr4ea_status",
+        "cr4ea_product_name",
+        "cr4ea_batch_number",
+        "cr4ea_deviation_date",
+        "cr4ea_investigation_owner",
+        "createdon"
+      ],
+      "filter": {
+        "statecode": 0
+      },
+      "sortOrder": [
+        {
+          "column": "createdon",
+          "direction": "descending"
+        }
+      ]
+    },
+    {
+      "viewName": "High Severity Deviations",
+      "viewType": "Public",
+      "columns": [
+        "cr4ea_title",
+        "cr4ea_severity",
+        "cr4ea_status",
+        "cr4ea_product_name",
+        "cr4ea_batch_number",
+        "cr4ea_deviation_date",
+        "cr4ea_investigation_owner",
+        "cr4ea_confidence",
+        "createdon"
+      ],
+      "filter": {
+        "statecode": 0,
+        "cr4ea_severity": 919860002
+      },
+      "sortOrder": [
+        {
+          "column": "createdon",
+          "direction": "descending"
+        }
+      ]
+    },
+    {
+      "viewName": "My Open Deviations",
+      "viewType": "Public",
+      "columns": [
+        "cr4ea_title",
+        "cr4ea_severity",
+        "cr4ea_status",
+        "cr4ea_product_name",
+        "cr4ea_batch_number",
+        "cr4ea_target_closure_date",
+        "createdon"
+      ],
+      "filter": {
+        "statecode": 0,
+        "cr4ea_status": 919860000,
+        "ownerid": "{current_user}"
+      },
+      "sortOrder": [
+        {
+          "column": "createdon",
+          "direction": "ascending"
+        }
+      ]
+    },
+    {
+      "viewName": "Deviations Requiring Review",
+      "viewType": "Public",
+      "columns": [
+        "cr4ea_title",
+        "cr4ea_severity",
+        "cr4ea_status",
+        "cr4ea_product_name",
+        "cr4ea_batch_number",
+        "cr4ea_investigation_owner",
+        "cr4ea_target_closure_date",
+        "createdon"
+      ],
+      "filter": {
+        "statecode": 0,
+        "cr4ea_status": 919860001
+      },
+      "sortOrder": [
+        {
+          "column": "createdon",
+          "direction": "ascending"
+        }
+      ]
+    },
+    {
+      "viewName": "Overdue Deviations",
+      "viewType": "Public",
+      "columns": [
+        "cr4ea_title",
+        "cr4ea_severity",
+        "cr4ea_status",
+        "cr4ea_product_name",
+        "cr4ea_batch_number",
+        "cr4ea_investigation_owner",
+        "cr4ea_target_closure_date",
+        "createdon"
+      ],
+      "filter": {
+        "statecode": 0,
+        "cr4ea_target_closure_date": "{less_than_today}",
+        "cr4ea_status": [919860000, 919860001]
+      },
+      "sortOrder": [
+        {
+          "column": "cr4ea_target_closure_date",
+          "direction": "ascending"
+        }
+      ]
+    }
+  ],
+  "forms": [
+    {
+      "formName": "Deviation Main Form",
+      "formType": "Main",
+      "sections": [
+        {
+          "sectionName": "Deviation Details",
+          "columns": 2,
+          "fields": [
+            "cr4ea_title",
+            "cr4ea_description",
+            "cr4ea_product_name",
+            "cr4ea_batch_number",
+            "cr4ea_equipment_id",
+            "cr4ea_deviation_date",
+            "cr4ea_status",
+            "cr4ea_investigation_owner"
+          ]
+        },
+        {
+          "sectionName": "AI Analysis",
+          "columns": 1,
+          "fields": [
+            "cr4ea_severity",
+            "cr4ea_confidence",
+            "cr4ea_classified_date",
+            "cr4ea_ai_summary",
+            "cr4ea_ai_capa"
+          ],
+          "fieldSettings": [
+            {
+              "fieldName": "cr4ea_ai_summary",
+              "readOnly": true
+            },
+            {
+              "fieldName": "cr4ea_ai_capa",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "sectionName": "Investigation",
+          "columns": 1,
+          "fields": [
+            "cr4ea_root_cause",
+            "cr4ea_capa_implemented",
+            "cr4ea_effectiveness_verified",
+            "cr4ea_target_closure_date",
+            "cr4ea_actual_closure_date"
+          ]
+        },
+        {
+          "sectionName": "Batch Disposition",
+          "columns": 2,
+          "fields": [
+            "cr4ea_batch_disposition",
+            "cr4ea_regulatory_reportable"
+          ]
+        }
+      ]
+    }
+  ],
+  "businessRules": [
+    {
+      "ruleName": "Set Target Closure Date",
+      "scope": "Entity",
+      "trigger": "OnCreate",
+      "conditions": [
+        {
+          "field": "cr4ea_severity",
+          "operator": "Equals",
+          "value": 919860002
+        }
+      ],
+      "actions": [
+        {
+          "type": "SetFieldValue",
+          "field": "cr4ea_target_closure_date",
+          "value": "{createdon + 30 days}"
+        }
+      ]
+    },
+    {
+      "ruleName": "Require Investigation Owner for Under Investigation Status",
+      "scope": "Entity",
+      "trigger": "OnSave",
+      "conditions": [
+        {
+          "field": "cr4ea_status",
+          "operator": "Equals",
+          "value": 919860001
+        },
+        {
+          "field": "cr4ea_investigation_owner",
+          "operator": "DoesNotContainData"
+        }
+      ],
+      "actions": [
+        {
+          "type": "ShowErrorMessage",
+          "message": "Investigation Owner is required when Status is set to 'Under Investigation'"
+        }
+      ]
+    },
+    {
+      "ruleName": "Set Actual Closure Date When Closed",
+      "scope": "Entity",
+      "trigger": "OnSave",
+      "conditions": [
+        {
+          "field": "cr4ea_status",
+          "operator": "Equals",
+          "value": 919860002
+        },
+        {
+          "field": "cr4ea_actual_closure_date",
+          "operator": "DoesNotContainData"
+        }
+      ],
+      "actions": [
+        {
+          "type": "SetFieldValue",
+          "field": "cr4ea_actual_closure_date",
+          "value": "{today}"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "This schema represents the Dataverse table configuration for Process Copilot deviation management",
+    "Choice field numeric values (e.g., 919860000) are auto-generated by Dataverse; customize as needed",
+    "Field-level security on AI output fields ensures quality specialists can view but not edit AI-generated content",
+    "Audit and change tracking enabled for regulatory compliance (21 CFR Part 11)",
+    "Additional custom columns can be added based on site-specific requirements (e.g., manufacturing location, department)",
+    "Integration with external QMS systems can be achieved via Dataverse Web API (REST/OData)"
+  ]
+}

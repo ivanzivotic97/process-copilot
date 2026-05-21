@@ -1,0 +1,36 @@
+# Power Platform
+*.zip
+.msbuild/
+*.suo
+*.user
+.vs/
+
+# Secrets and credentials
+*.secrets.json
+appsettings.local.json
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Screenshots (add actual screenshots separately)
+screenshots/*.png
+screenshots/*.jpg
+!screenshots/README.md
+
+# Temporary files
+*.tmp
+temp/
